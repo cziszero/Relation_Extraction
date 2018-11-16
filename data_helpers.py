@@ -9,11 +9,14 @@ file_path = "/home/sahil/ML-bucket/data/train_new.csv"
 
 
 def read_data(file=file_path):
+    """
+    从文件中读取数据返回pandas.DataFrame
+    """
     col_names = ['System-Id', 'Message', 'drug-offset-start', 'drug-offset-end', 'sideEffect-offset-start',
                  'sideEffect-offset-end', 'WM1', 'WM2', 'relType']
     data_frame = pd.read_csv(file, skipinitialspace=True, usecols=col_names)
-    mssg_frame = data_frame['Message'].drop_duplicates()
-    tokenizer = TweetTokenizer()
+    mssg_frame = data_frame['Message'].drop_duplicates()  # 去除重复的
+    tokenizer = TweetTokenizer()  # 分词
     string = []
     for mssg in mssg_frame:
         tokens = tokenizer.tokenize(mssg)
@@ -30,6 +33,9 @@ def read_data(file=file_path):
 # TODO change regex to [a-z0-9].+
 
 def is_word(word):
+    """
+    这个函数写的有问题
+    """
     for char in word:
         if char.isalpha() or char.isdigit():
             return True
@@ -58,16 +64,17 @@ def is_word(word):
 
 def batch_iter(doc, batch_size, num_epochs, shuffle=True):
     """
-    Generates a batch iterator for a dataset.
+    生成一个batch迭代器
     """
     data = list()
     for iter in doc:
-        data.append(iter)
+        data.append(iter)  # 全部读进来
     # print("len", len(data))
     data = np.array(data)
     data_size = len(data)
     num_batches_per_epoch = int((len(data) - 1) / batch_size) + 1
     for epoch in range(num_epochs):
+        # 混洗
         # Shuffle the data at each epoch
         if shuffle:
             shuffle_indices = np.random.permutation(np.arange(data_size))
